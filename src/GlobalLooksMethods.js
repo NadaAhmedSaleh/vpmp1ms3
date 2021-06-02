@@ -142,12 +142,88 @@ export const GlobalLooksProvider = props => {
               // code block
           }
     }
-   
 
+    function timeout(delay) {
+      return new Promise( res => setTimeout(res, delay) );
+  }
+
+  const  waitFor=async(time)=>{
+    console.log("before")
+    syncDelay(time*1000);
+    console.log("after")
+   //   console.log("hnaa")
+    //  timeout(time)
+  }
+  function writeNext(i)
+{
+    setTimeout(function()
+    {
+       console.log("here");
+    }, i);
+}
+
+  function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
+  
+  function syncDelay(milliseconds){
+    var start = new Date().getTime();
+    var end=0;
+    while( (end-start) < milliseconds){
+        end = new Date().getTime();
+    }
+   }
+   
+   function sleep1(miliseconds) {
+    var currentTime = new Date().getTime();
+ 
+    while (currentTime + miliseconds >= new Date().getTime()) {
+    }
+ }
+
+
+
+ function sleep2(ms) {
+   return new Promise(resolve => setTimeout(resolve, ms));
+ }
+ 
+ async function demo() {
+   console.log('Taking a break...');
+   await sleep(2000);
+   console.log('Two seconds later, showing sleep in a loop...');
+ 
+   // Sleep in loop
+   for (let i = 0; i < 5; i++) {
+     if (i === 3)
+       await sleep(2000);
+     console.log(i);
+   }
+ }
+ 
+/*
+ function writeNext(i)
+ {
+     document.write(i);
+ 
+     if(i == 5)
+         return;
+ 
+     setTimeout(function()
+     {
+         writeNext(i + 1);
+ 
+     }, 2000);
+ }
+ 
+ writeNext(1);*/
 
     return (
         <GlobalLooksContext.Provider value={{ballerinaSrc,switchCostumeTo,nextCostume,sayBalerinaText,sayBalerinaFlag,say,
-            sayFor,sayOrthinkFlag,setsayOrthinkFlag,sayBalerinaFlag,thinkFor,think
+            sayFor,sayOrthinkFlag,setsayOrthinkFlag,sayBalerinaFlag,thinkFor,think,waitFor
              }}>
             {props.children}
         </GlobalLooksContext.Provider>

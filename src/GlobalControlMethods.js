@@ -17,19 +17,12 @@ export const GlobalControlProvider = props => {
     */
 
     
-    function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
-
-    const  waitFor= async(time)=>{
-        timeout(time)
-    }
+  
 
 
 
     return (
-        <GlobalControlContext.Provider value={{waitFor
-             }}>
+        <GlobalControlContext.Provider >
             {props.children}
         </GlobalControlContext.Provider>
     )

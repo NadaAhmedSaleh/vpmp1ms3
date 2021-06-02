@@ -94,6 +94,7 @@ export const GlobalMotionProvider = props => {
           }
     }
     const gotoXY=(valuex,valuey,sprite)=>{
+      console.log("hooooo")
       valuex = 40+ (valuex*100/480);
       valuey = 30+ (-valuey*100/480);
       if(valuey>60)
