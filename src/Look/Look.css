@@ -1,0 +1,26 @@
+
+.say-block-container{
+
+position: relative;
+align-items: center;
+text-align: center;
+
+}
+
+.say-photo-container{
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    margin-left: 40%;
+ 
+    border: 3px solid red;
+
+}
+
+.say-text-container{
+position: absolute;
+border: 2px solid gray;
+margin-top: 40px;
+margin-left: 200px;
+width: 200px;
+}

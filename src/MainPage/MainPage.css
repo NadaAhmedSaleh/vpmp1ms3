@@ -1,0 +1,54 @@
+.main-page-container{
+
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+    
+
+}
+
+.stage-icon-container{
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    position: relative;
+}
+.main-stage-container{
+
+    width:780px;
+    height: 630px;
+    padding: 5px;
+    position: relative;
+    margin: 10px;
+}
+
+.back-drop-photo{
+    height:98%; max-width: 100%;
+    position: absolute;
+    
+
+}
+.execute-icon-container{
+  
+    position: relative;
+   
+    color: green;
+    cursor: pointer;
+    height: 100px;
+    
+
+}
+
+.execute-icon-container:hover{
+
+    color: rgb(6, 226, 6);
+}
+
+
+.girl-container{
+    position: absolute;
+    margin-top: 20px;
+    margin-left: 20px;
+}
