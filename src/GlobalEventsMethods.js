@@ -17,13 +17,20 @@ export const GlobalEventsProvider = props => {
     */
 
     // messages 
-    const [messages,setMessages] = useState(["nada","nada100","nada"])
+    const [messages,setMessages] = useState([])
+
+    const[message,setMessage]= useState("lsa")
 
 
     // broadcast
-    const broadcast=(message)=>{
+    const broadcast=async(message)=>{
+      
+        setMessage(message)
+     
+       /* if(!messages.includes(message)){
         messages.push(message)
         setMessages([...messages,...[message]])
+        }*/
     }
     // recieve
     const recieve=(message)=>{
@@ -35,7 +42,7 @@ export const GlobalEventsProvider = props => {
 
 
     return (
-        <GlobalEventsContext.Provider value={{broadcast,recieve,messages
+        <GlobalEventsContext.Provider value={{broadcast,messages,message,recieve
              }}>
             {props.children}
         </GlobalEventsContext.Provider>

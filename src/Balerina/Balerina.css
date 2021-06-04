@@ -2,17 +2,13 @@
 
     position: absolute;
 
- 
-    border: 3px solid white;
-
 
 }
 
 .balerina-text-container{
     position: absolute;
-
-
-    border: 3px solid white;
+    margin-bottom: 2px;
+    margin-right: 4px;
 
 
 }

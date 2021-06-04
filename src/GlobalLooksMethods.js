@@ -45,10 +45,10 @@ export const GlobalLooksProvider = props => {
     const switchCostumeTo=(costume,sprite)=>{
         switch(sprite) {
            case 1:
-             setBenSrc(costume)
+             setBenSrc(costume+".svg")
               break;
             case 4:
-                setBallerinaSrc(costume)
+                setBallerinaSrc(costume+".svg")
               break;
             case 6:
               // code block
@@ -64,7 +64,6 @@ export const GlobalLooksProvider = props => {
               var currentIndx = benCostumes.indexOf(benSrc) +1;
               if(currentIndx> benCostumes.length-1)
               currentIndx=0
-              console.log(currentIndx)
               return benCostumes[currentIndx]
             } 
             )
@@ -76,7 +75,6 @@ export const GlobalLooksProvider = props => {
               var currentIndx = goalieCostumes.indexOf(goalieSrc) +1;
               if(currentIndx> goalieCostumes.length-1)
               currentIndx=0
-              console.log(currentIndx)
               return goalieCostumes[currentIndx]
             } 
             )

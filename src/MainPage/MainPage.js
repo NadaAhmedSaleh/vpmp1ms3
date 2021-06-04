@@ -2,25 +2,26 @@ import React, { Component } from 'react';
 import { useEffect, useState,useContext  } from 'react';
 import './MainPage.css';
 import '../Balerina/Balerina.css'
-import{SayComponent} from '../Look/Look';
 
 import {BalerinaComponent} from '../Balerina/Balerina'
 
 
 import {BsFlagFill} from 'react-icons/bs';
 
+import {ImStop} from 'react-icons/im';
+
 import  backDrop  from '../sprites photos/backdrop/Soccer 2.png';
 
-
-import { AppStateContext } from '../AppGlobalState'
 import{GlobalMotionContext} from '../GlobalMotionMethds'
 import{GlobalLooksContext} from '../GlobalLooksMethods'
 
 import{GlobalEventsContext} from '../GlobalEventsMethods'
 
 import{GlobalControlContext} from '../GlobalControlMethods'
-import { Switch } from 'react-router';
 
+import audio from '../sprites photos/backdrop/Chill.mp3';
+
+import {getCode} from '../service'
 
 
 
@@ -32,40 +33,43 @@ function MainPage(props) {
    const{ changeXBy,changeYBy,balerina1X ,balerina1Y,setX,setY,gotoXY,balerinaRotation,turnBy,pointInDirection,
     benY,benX,benRotation,
     goalieRotation,goalieX,goalieY,
-  ballRotation,ballX,ballY,ballTouchGoalie,
-  chekTwoSpritesTouching,gv} = useContext(GlobalMotionContext)
+  ballRotation,ballX,ballY,ballPos , benPos,
+  chekTwoSpritesTouching} = useContext(GlobalMotionContext)
 
-const{broadcast,recieve,messages} =useContext(GlobalEventsContext)
+const{broadcast,message} =useContext(GlobalEventsContext)
 
 const{waitFor}= useContext(GlobalControlContext)
 
 
-var ballTouchingGoalie = false
-var benTouchingBall = false
+const [input,setInput]= useState([])
 
-useEffect(() => {
-  checkIfBenTouchBall()
-},[benX]);
-useEffect(() => {
-  checkIfBallTouchGoalie()
-},[ballX]);
-// 30 //39//65
 
-const checkIfBenTouchBall=()=>{
-if(benX<45&&benX>39){
-  benTouchingBall= true;
-}
-else{
-  benTouchingBall= false
-}
-}
 
-const checkIfBallTouchGoalie=()=>{
-  if(ballX<70&&ballX>60){
-    ballTouchingGoalie = true
+// connection to backend
+const loadCOde=async()=>{
+    var arr =await  getCode()
+    console.log(arr)
+    setInput(arr)
   }
-  else{
-    ballTouchingGoalie = false
+
+
+  useEffect(()=>{
+    loadCOde()
+  },[]);
+
+
+useEffect(() => {
+  whenbroadcastreceived()
+},[message]);
+
+
+
+
+const playAudio =async () => {
+  while(true){
+  await new Audio(audio).play();
+  await waitFor(8)
+
   }
 
 }
@@ -75,14 +79,12 @@ const executeOneMethod=async(arr,sprite)=>
    
     var head = arr[0]
     switch(head){
-        // motion
+      
          //[pointindirection,90]
         case "pointindirection":
           
-          console.log("ok")
         var dir = parseInt(arr[1])
-        console.log(dir)
-       await pointInDirection(dir,4)
+       await pointInDirection(dir,sprite)
         break;
 
         //[setx,3]
@@ -112,8 +114,8 @@ const executeOneMethod=async(arr,sprite)=>
 
        // [changexby,5]
        case "changexby":
-         console.log("changeby")
-         console.log(sprite)
+         /////// dont't forget to adjust this
+      case "movesteps":
        var x = parseInt(arr[1])
        await changeXBy(x,sprite)
        break;
@@ -127,7 +129,6 @@ const executeOneMethod=async(arr,sprite)=>
 
        //[nextcostume]
        case "nextcostume":
-         console.log("here")
          await nextCostume(sprite)
        break;
 
@@ -172,10 +173,7 @@ const executeOneMethod=async(arr,sprite)=>
     
     var body = arr[2];
      for(var z = 0 ; z<parseInt( arr[1]) ;z++){
-      console.log("repeat")
-       console.log("hi")
         for(var m = 0 ; m<body.length;m++){
-          console.log(body[m])
        await   executeOneMethod(body[m],sprite)
         }
      }
@@ -185,8 +183,6 @@ const executeOneMethod=async(arr,sprite)=>
      case "if":
      var body = arr[1];
      if(chekTwoSpritesTouching(sprite,returnSpriteNum(body[0][1]))){
-       console.log("if true")
-
        await executeOneMethod(body[1],sprite)
      }
      break;
@@ -194,27 +190,31 @@ const executeOneMethod=async(arr,sprite)=>
 case "if_else":
   var body = arr[1];
   if(chekTwoSpritesTouching(sprite,returnSpriteNum(body[0][1]))){
-    console.log("if true")
     await executeOneMethod(body[1],sprite)
   }
   else{
-    console.log("else true")
     await executeOneMethod(body[2],sprite)
   }
   break;
+
+  // ["broadcast","mshgoal"]
+  case "broadcast":
+  await broadcast(arr[1])
+  break;
+
     }}
 
     const returnSpriteNum=(sprite)=>{
       switch(sprite){
         case "Ben":
           return 1;
-          break;
+    
         case "Soccer Ball":
           return 2;
-          break;
+     
         case "Goalie":
           return 3;
-          break;
+
           default:
             return 4;
       }
@@ -222,16 +222,16 @@ case "if_else":
 
     const executeOneSequential = async(arr,sprite)=>{
      
-      console.log("execute")
       for(var i = 1 ; i<arr.length ;i++){
         if(arr[i][0]=="forever"){
+        
           while(true){
             for(var j = 0 ; j<arr[i][1].length;j++){
              
             await  executeOneMethod(arr[i][1][j],sprite)
 
             } 
-            await waitFor(0.008)
+            await waitFor(0.08)
             }
             
           }
@@ -240,53 +240,116 @@ case "if_else":
           // ["repeat_until",[["touchingobject","Goalie"],["changexby","5"],["changeyby","5"]]]
 
           else if ( arr[i][0]== "repeat_until"){
-            console.log("repeat until")
 
             var body =arr[i][1]
-            console.log(chekTwoSpritesTouching(sprite,returnSpriteNum(body[0][1])))
          
            while (! chekTwoSpritesTouching(sprite,returnSpriteNum(body[0][1]))){
               for ( var j = 1 ; j<body.length ;j++){
                 await  executeOneMethod(body[j],sprite)
-                await waitFor(0.3)
+                await waitFor(0.01)
               }
             }
           }
           else if ( arr[i][0]== "wait_until"){
-            console.log("wait_until")
 
             var body =arr[i][1]
            
-            console.log(returnSpriteNum(body[0][1]))
            while (!chekTwoSpritesTouching(sprite,returnSpriteNum(body[0][1]))){    
                 await  waitFor(0.01)
-                console.log("wait until")
             }
-            console.log("finish wait until")
           }
-          // [ [],["if",[["touchingobject","Ben"],["changexby","30"]]]]
   
         else{
-         await executeOneMethod(arr[i][1],sprite)
+         await executeOneMethod(arr[i],sprite)
         }
       }
     }
-    const executewhenflagclicked=async(arr,sprite)=>{
+    const executewhenflagclicked=async()=>{
      
+playAudio();
+      for (var i = 0 ; i<input.length;i++){
 
+        var tempBlocks = input[i];
+        var sprite = returnSpriteNumFromArray(tempBlocks[0])
+
+        for (var j = 1; j<tempBlocks.length ;j++){
+
+
+          if(tempBlocks[j][0][0]=="whenflagclicked")
+          executeOneSequential(tempBlocks[j],sprite)  }
+       }
+       }
+
+    const whenbroadcastreceived=async()=>{
+      
+  
+        console.log(message)
+      
+      for (var i = 0 ; i<input.length;i++){
+
+        var tempBlocks = input[i];
+        var sprite = returnSpriteNumFromArray(tempBlocks[0])
+
+        for (var j = 1; j<tempBlocks.length ;j++){
+
+
+          if(tempBlocks[j][0][0]=="whenbroadcastreceived"&&message==tempBlocks[j][0][1])
+{
+         await executeOneSequential(tempBlocks[j],sprite) 
+         
+ 
+
+  }  
+
+      }}
+       }
+    
+
+    const returnSpriteNumFromArray=(head)=>{
+      switch(head){
+      case "New Sprite:Ben#\n":
+        return 1;
+  
+      case "New Sprite:Soccer Ball#\n":
+        return 2;
+
+      case "New Sprite:Goalie#\n":
+        return 3;
+
+      case "New Sprite:Ballerina#\n":
+        return 4;
+  
+      case "New Sprite:Ballerina2#\n":
+      case "New Sprite:Ballerina3#\n":
+        return 0 ;
+
+
+      }
     }
-
  
 const handleKeyPress =async (event) => {
+  
   if(event.key === 'u'){
-    for(var x = 0 ; x<15;x++){
-    await changeXBy(10,1)
-    await waitFor(0.2)
+    
+   
+  for (var i = 0 ; i<input.length;i++){
+
+    var tempBlocks = input[i];
+    var sprite = returnSpriteNumFromArray(tempBlocks[0])
+
+    for (var j = 1; j<tempBlocks.length ;j++){
+    
+      
+      if(tempBlocks[j][0][0]=="whenkeypressed"){
+      executeOneSequential(tempBlocks[j],sprite)
+
+      }
     }
   }
+
+  }
+
 }
-
-
 
 
 
@@ -296,12 +359,20 @@ const handleKeyPress =async (event) => {
        <div className="stage-icon-container"  >
        
          <div className="main-stage-container">
-         <img className="back-drop-photo" src={backDrop} alt="backDrop" onKeyDown={(e)=>console.log("nada")} />
+         <img className="back-drop-photo" src={backDrop} alt="backDrop"  />
 
-         <BalerinaComponent balerina1X={balerina1X} balerina1Y={balerina1Y} balerinaRotation={balerinaRotation}
+{/* balerinas */}
+         <BalerinaComponent balerina1X={balerina1X+15} balerina1Y={balerina1Y} balerinaRotation={balerinaRotation}
          ballerinaSrc={ballerinaSrc} sayBalerinaText={sayBalerinaText} sayOrthinkFlag={sayOrthinkFlag}
          sayBalerinaFlag={sayBalerinaFlag} width={200} height={200}/>
 
+       <BalerinaComponent balerina1X={balerina1X} balerina1Y={balerina1Y} balerinaRotation={balerinaRotation}
+         ballerinaSrc={ballerinaSrc} sayBalerinaText={sayBalerinaText} sayOrthinkFlag={sayOrthinkFlag}
+         sayBalerinaFlag={sayBalerinaFlag} width={200} height={200}/>
+
+       <BalerinaComponent balerina1X={balerina1X-15} balerina1Y={balerina1Y} balerinaRotation={balerinaRotation}
+         ballerinaSrc={ballerinaSrc} sayBalerinaText={sayBalerinaText} sayOrthinkFlag={sayOrthinkFlag}
+         sayBalerinaFlag={sayBalerinaFlag} width={200} height={200}/>
        {/* ben*/}
         <BalerinaComponent balerina1X={benX} balerina1Y={benY} balerinaRotation={benRotation}
          ballerinaSrc={benSrc} sayBalerinaText={sayBenText} sayOrthinkFlag={sayOrThinkBen}
@@ -318,9 +389,16 @@ const handleKeyPress =async (event) => {
       
          </div>
          
+         <div className="buttons-container">
          <div className="execute-icon-container" 
-         onClick={(e)=>executeOneSequential([["whenflagclicked"],["forever",[["if_else",[["touchingobject","Soccer Ball"],["thinkforsecs","yarb goal","1.5"],["think","hmmm"]]]]]],1)}
+         onClick={(e)=>executewhenflagclicked()}
          ><BsFlagFill size="10em"/></div>
+
+         <div className="stop-icon-container" onClick={(e)=>window.location.reload()}>
+           <ImStop size="8em"/>
+
+         </div>
+         </div>
 
          </div>
      </div>

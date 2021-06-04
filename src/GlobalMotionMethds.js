@@ -66,7 +66,6 @@ export const GlobalMotionProvider = props => {
           case 1:{
             
             if(chekTwoSpritesTouching(1,2)){
-              console.log("touched ball")
             }
             if((benX>80&&value>0)||(benX<0&&value<0)){
               value=0;
@@ -74,7 +73,6 @@ export const GlobalMotionProvider = props => {
           else{
             setBenX(benX=>
               {
-                console.log(benPos)
                 benPos = benX
                 return benX+(value*100/400)})
            } }
@@ -83,13 +81,11 @@ export const GlobalMotionProvider = props => {
           case 2:{
             
             if(chekTwoSpritesTouching(3,2)){
-              console.log("touched goalie")
             }
             if((ballX>80&&value>0)||(ballX<0&&value<0)){
               value=0;
           }
           else{
-            console.log(ballPos)
             setBallX(ballX=>{ballPos= ballX
              return ballX+(value*100/400)}
             )
@@ -163,7 +159,7 @@ export const GlobalMotionProvider = props => {
           }
     }
     const gotoXY=(valuex,valuey,sprite)=>{
-      console.log("hooooo")
+    
       valuex = 40+ (valuex*100/480);
       valuey = 30+ (-valuey*100/480);
       if(valuey>60)
@@ -209,7 +205,7 @@ export const GlobalMotionProvider = props => {
   }
 
   const pointInDirection=(value ,sprite)=>{
-
+value = value -90
     switch(sprite) {
       case 1:
         setBenRotation(value)
