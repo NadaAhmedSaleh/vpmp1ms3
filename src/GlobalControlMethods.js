@@ -6,23 +6,18 @@ export const GlobalControlContext = createContext()
 export const GlobalControlProvider = props => {
 
 
-
-
-  // sprite:
-    /*
-    1-ben
-    2-ball
-    3-goalie
-    4-balerina
-    */
-
-    
-  
-
+    function waitFor(seconds) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve('resolved');
+          }, seconds*1000);
+        });
+      }
 
 
     return (
-        <GlobalControlContext.Provider >
+        <GlobalControlContext.Provider value={{ waitFor
+             }}>
             {props.children}
         </GlobalControlContext.Provider>
     )

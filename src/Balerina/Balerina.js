@@ -14,8 +14,8 @@ export function BalerinaComponent(props) {
 return(
 
      <div  className="balerina-text-container"
-     style={{marginLeft:''+props.balerina1X+'%', marginTop:''+props.balerina1Y+'%',
-     transform: "rotate("+props.balerinaRotation+"deg)"}}
+     style={{marginLeft:''+props.balerina1X+'%', marginTop:''+props.balerina1Y+'%',width:props.width,height:props.height,
+     transform: "rotate("+props.balerinaRotation+"deg)", width:""+props.width+"px",height:""+props.height+"px"}}
    >
 
        {props.sayOrthinkFlag?
@@ -28,7 +28,7 @@ return(
    
    <img className="balerina-sprite-container" 
    style={{marginLeft:''+props.balerina1X+'%', marginTop:''+props.balerina1Y+'%',
-    transform: "rotate("+props.balerinaRotation+"deg)"}}
+    transform: "rotate("+props.balerinaRotation+"deg)",width:""+(props.width-50)+"px",height:""+(props.height-50)+"px"}}
    src={require('../sprites photos/balerina/'+props.ballerinaSrc).default} alt='"ballerina"' />
 
    

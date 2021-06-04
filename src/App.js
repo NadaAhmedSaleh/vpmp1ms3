@@ -4,26 +4,26 @@ import MainPage from '../src/MainPage/MainPage'
 import { AppStateProvider } from './AppGlobalState';
 import {GlobalMotionProvider} from './GlobalMotionMethds';
 import{GlobalLooksProvider} from './GlobalLooksMethods';
-import{GlobalControlProvider} from './GlobalControlMethods';
 import{GlobalEventsProvider} from './GlobalEventsMethods'
+import{GlobalControlProvider} from './GlobalControlMethods'
 
 export default class App extends React.Component {
   
 
     render() {
         return (
-            <div>
+            <div >
             <AppStateProvider>
   
                     <GlobalMotionProvider>
                         <GlobalLooksProvider>
-                            <GlobalControlProvider>
                                 <GlobalEventsProvider>
+                                    <GlobalControlProvider>
                 <Switch>
                 <Route exact path='/' component={MainPage}/>
                  </Switch>
-                 </GlobalEventsProvider>
                  </GlobalControlProvider>
+                 </GlobalEventsProvider>
                  </GlobalLooksProvider>
                  </GlobalMotionProvider>
             </AppStateProvider>

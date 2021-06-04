@@ -5,15 +5,34 @@ import React, { useState, createContext, useContext } from 'react'
 export const GlobalLooksContext = createContext()
 export const GlobalLooksProvider = props => {
 
-    const[ballerinaSrc,setBallerinaSrc] = useState('ballerina-a.svg')
-    const[ballerinaCostumes,setBalerinaCostumes]= useState(['ballerina-a.svg','ballerina-b.svg','ballerina-c.svg','ballerina-d.svg'])
+  // belerina
+      const[ballerinaSrc,setBallerinaSrc] = useState('ballerina-a.svg')
+      const[ballerinaCostumes,setBalerinaCostumes]= useState(['ballerina-a.svg','ballerina-b.svg','ballerina-c.svg','ballerina-d.svg'])
+  
+      const[sayBalerinaText,setSayBalerinaText]= useState("")
+      const[sayBalerinaFlag,setSayBalerinaFlag]= useState(false)
+      const[sayOrthinkFlag,setsayOrthinkFlag]= useState(false)
 
-    const[sayBalerinaText,setSayBalerinaText]= useState("")
-    const[thinkBalerinaText,setThinkBalerinaText]= useState("")
+      // ball
 
-    const[sayBalerinaFlag,setSayBalerinaFlag]= useState(false)
-    const[sayOrthinkFlag,setsayOrthinkFlag]= useState(false)
+      const[ballSrc,setBallSrc] = useState('soccer ball.svg')
 
+      // goalie
+  
+      const[goalieSrc,setgoalieSrc] = useState('goalie-a.svg')
+      const[goalieCostumes,setgoalieCostumes]= useState(['goalie-a.svg','goalie-b.svg','goalie-c.svg','goalie-d.svg'])
+
+
+      // ben 
+
+      const[benSrc,setBenSrc] = useState("ben-d.svg")
+      const[benCostumes,setBenCostumes]= useState(['ben-a.svg','ben-b.svg','ben-c.svg','ben-d.svg'])
+
+      const[sayBenText,setSayBenText]= useState("")
+      const[sayOrThinkBen,setsayOrThinkBen]= useState(false)
+      const[sayBenflag,setsayBenflag]= useState(false)
+  
+    
 
   // sprite:
     /*
@@ -25,6 +44,9 @@ export const GlobalLooksProvider = props => {
 
     const switchCostumeTo=(costume,sprite)=>{
         switch(sprite) {
+           case 1:
+             setBenSrc(costume)
+              break;
             case 4:
                 setBallerinaSrc(costume)
               break;
@@ -37,12 +59,41 @@ export const GlobalLooksProvider = props => {
     }
     const nextCostume=(sprite)=>{
         switch(sprite) {
+          case 1:{
+            setBenSrc(benSrc=>{
+              var currentIndx = benCostumes.indexOf(benSrc) +1;
+              if(currentIndx> benCostumes.length-1)
+              currentIndx=0
+              console.log(currentIndx)
+              return benCostumes[currentIndx]
+            } 
+            )
+
+          }
+          break;
+          case 3:{
+            setgoalieSrc(goalieSrc=>{
+              var currentIndx = goalieCostumes.indexOf(goalieSrc) +1;
+              if(currentIndx> goalieCostumes.length-1)
+              currentIndx=0
+              console.log(currentIndx)
+              return goalieCostumes[currentIndx]
+            } 
+            )
+
+          }
+          break;
             case 4:{
+            
+            
+
+              setBallerinaSrc(ballerinaSrc=>{
                 var currentIndx = ballerinaCostumes.indexOf(ballerinaSrc) +1;
                 if(currentIndx> ballerinaCostumes.length-1)
                 currentIndx=0
-               setBallerinaSrc(ballerinaCostumes[currentIndx])
-               
+                return ballerinaCostumes[currentIndx]
+              } 
+              )
 
             }
               break;
@@ -74,21 +125,23 @@ export const GlobalLooksProvider = props => {
     }
    
 
-    function timeout(delay) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
+
     
     const  sayFor= async(sprite,text,time)=>{
 
         switch(sprite) {
             case 4:{
-                setsayOrthinkFlag(true)
-                setSayBalerinaText(text)
-                setSayBalerinaFlag(true)
+               await setsayOrthinkFlag(true)
+               await setSayBalerinaText(text)
+               await setSayBalerinaFlag(true)
 
-                await timeout(time*1000);
-                setSayBalerinaFlag(false)
-                setsayOrthinkFlag(false)
+               await   new Promise(resolve => {
+                setTimeout(() => {
+                  resolve('resolved');
+                }, time*1000);
+              });
+               await setSayBalerinaFlag(false)
+               await setsayOrthinkFlag(false)
 
             }
               break;
@@ -99,18 +152,37 @@ export const GlobalLooksProvider = props => {
               // code block
           }
     }
+
    
     const  thinkFor= async(sprite,text,time)=>{
 
         switch(sprite) {
-            case 4:{
-                setsayOrthinkFlag(true)
-                setSayBalerinaText(text)
-                setSayBalerinaFlag(false)
+          case 1:
+            {
+              await setsayOrThinkBen(true)
+               await setSayBenText(text)
+               await setsayBenflag(false)
+               await   new Promise(resolve => {
+                 setTimeout(() => {
+                   resolve('resolved');
+                 }, time*1000);
+               });
+              await  setsayBenflag(false)
+             await  setsayOrThinkBen(false)
 
-                await timeout(time*1000);
-                setSayBalerinaFlag(false)
-                setsayOrthinkFlag(false)
+           }
+            break;
+            case 4:{
+               await setsayOrthinkFlag(true)
+                await setSayBalerinaText(text)
+                await setSayBalerinaFlag(false)
+                await   new Promise(resolve => {
+                  setTimeout(() => {
+                    resolve('resolved');
+                  }, time*1000);
+                });
+               await  setSayBalerinaFlag(false)
+              await  setsayOrthinkFlag(false)
 
             }
               break;
@@ -127,6 +199,13 @@ export const GlobalLooksProvider = props => {
     const  think= async(sprite,text)=>{
 
         switch(sprite) {
+          case 1:{
+            setsayOrThinkBen(true)
+            setSayBenText(text)
+            setsayBenflag(false)
+
+          }
+            break;
             case 4:{
                 setsayOrthinkFlag(true)
                 setSayBalerinaText(text)
@@ -143,87 +222,13 @@ export const GlobalLooksProvider = props => {
           }
     }
 
-    function timeout(delay) {
-      return new Promise( res => setTimeout(res, delay) );
-  }
-
-  const  waitFor=async(time)=>{
-    console.log("before")
-    syncDelay(time*1000);
-    console.log("after")
-   //   console.log("hnaa")
-    //  timeout(time)
-  }
-  function writeNext(i)
-{
-    setTimeout(function()
-    {
-       console.log("here");
-    }, i);
-}
-
-  function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
-  
-  function syncDelay(milliseconds){
-    var start = new Date().getTime();
-    var end=0;
-    while( (end-start) < milliseconds){
-        end = new Date().getTime();
-    }
-   }
-   
-   function sleep1(miliseconds) {
-    var currentTime = new Date().getTime();
- 
-    while (currentTime + miliseconds >= new Date().getTime()) {
-    }
- }
 
 
-
- function sleep2(ms) {
-   return new Promise(resolve => setTimeout(resolve, ms));
- }
- 
- async function demo() {
-   console.log('Taking a break...');
-   await sleep(2000);
-   console.log('Two seconds later, showing sleep in a loop...');
- 
-   // Sleep in loop
-   for (let i = 0; i < 5; i++) {
-     if (i === 3)
-       await sleep(2000);
-     console.log(i);
-   }
- }
- 
-/*
- function writeNext(i)
- {
-     document.write(i);
- 
-     if(i == 5)
-         return;
- 
-     setTimeout(function()
-     {
-         writeNext(i + 1);
- 
-     }, 2000);
- }
- 
- writeNext(1);*/
 
     return (
         <GlobalLooksContext.Provider value={{ballerinaSrc,switchCostumeTo,nextCostume,sayBalerinaText,sayBalerinaFlag,say,
-            sayFor,sayOrthinkFlag,setsayOrthinkFlag,sayBalerinaFlag,thinkFor,think,waitFor
+            sayFor,sayOrthinkFlag,setsayOrthinkFlag,sayBalerinaFlag,thinkFor,think,
+            benSrc, ballSrc, goalieSrc ,sayOrThinkBen,sayBenText,sayBenflag
              }}>
             {props.children}
         </GlobalLooksContext.Provider>
